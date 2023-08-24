@@ -274,4 +274,4 @@ With the harness and attack intention, you can import them in the ``main.py`` an
 ## Contact the Contributors!
 
 - Yi Liu - yi009@e.ntu.edu.sg
-- Gelei Deng - [![LinkedIn][linkedin-shield]][linkedin-url] - gelei.deng@ntu.edu.sg
+- Gelei Deng - gelei.deng@ntu.edu.sg
