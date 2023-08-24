@@ -2,6 +2,19 @@
 
 This is the replication package for the paper "Prompt Injection attack against LLM-integrated Applications" in [arxiv](https://arxiv.org/abs/2306.05499). In this repository, we provide the source code of HouYi, a framework that automatically injects prompts into LLM-integrated applications to attack them. We also provide a demo script that simulates a LLM-integrated application and demonstrates how to use HouYi to attack it. Besides, you can use HouYi to attack real-world LLM-integrated applications by writing your own harness and attack intention.
 
+## Citation
+Please cite our paper if you use our code in your research:
+```
+@misc{liu2023prompt,
+      title={Prompt Injection attack against LLM-integrated Applications}, 
+      author={Yi Liu and Gelei Deng and Yuekang Li and Kailong Wang and Tianwei Zhang and Yepang Liu and Haoyu Wang and Yan Zheng and Yang Liu},
+      year={2023},
+      eprint={2306.05499},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR}
+}
+```
+
 ## Table of Contents
 
 - [Introduction of HouYi](#HouYi)
@@ -257,3 +270,8 @@ The above is an example of an attack intention that asks the LLM-integrated appl
 - `validate`: The function that validates whether the prompt injection is successful. It takes the response from the LLM-integrated application as input and returns a boolean value indicating whether the prompt injection is successful. You need to implement this function to validate the prompt injection.
 
 With the harness and attack intention, you can import them in the ``main.py`` and run the prompt injection to attack the LLM-integrated application.
+
+## Contact the Contributors!
+
+- Yi Liu - yi009@e.ntu.edu.sg
+- Gelei Deng - [![LinkedIn][linkedin-shield]][linkedin-url] - gelei.deng@ntu.edu.sg
