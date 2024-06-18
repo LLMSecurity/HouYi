@@ -29,7 +29,7 @@ Please install the following packages and make sure you have Python 3.8+ install
 pip install -r requirements.txt
 ```
 
-Because ULLR is based on GPT, you need to setup openai key to use it.
+Because HouYi is based on GPT, you need to setup openai key to use it.
 ```bash
 mv example.config.json config.json
 ```
@@ -42,7 +42,7 @@ Then, fill in your openai key in `config.json`.
 
 ## Demo
 
-To illustrate the usage of ULLR, we provide a demo script `main.py` that simulates a LLM-integrated application which translates English to French.
+To illustrate the usage of HouYi, we provide a demo script `main.py` that simulates a LLM-integrated application which translates English to French.
 
 To run the demo, simply run:
 ```bash
