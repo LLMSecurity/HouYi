@@ -23,6 +23,6 @@ You are an AI assistant named Botsonic. Your task is to provide conversational a
 Context: {prompt}
 '''
         logger.info(f"Application Prompt: {application_prompt}")
-        response = completion_with_chatgpt(prompt)
+        response = completion_with_chatgpt(application_prompt)
         logger.info(f"Response: {response}")
         return response

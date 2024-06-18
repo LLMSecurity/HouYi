@@ -4,88 +4,67 @@ import pathlib
 import loguru
 import openai
 
-from constant.prompt_injection import PromptInjection
-from context_infer import ContextInfer
+from constant.chromosome import Chromosome
 from harness.base_harness import Harness
 from harness.demo_translator_harness import TranslatorHarness
 from intention.base_intention import Intention
-from intention.write_code import WriteCode
-from strategy.disruptor_generation import DISRUPTOR_GENERATOR_LIST
-from strategy.framework_generation import FRAMEWORK_GENERATION_STRATEGY
-from strategy.separator_generation import SEPARATOR_GENERATOR_LIST
+from intention.content_manipulation import ContentManipulation
+from iterative_prompt_optimization import IterativePromptOptimizer
 
 logger = loguru.logger
 
-# load config file from root path
+# Load config file from root path
 config_file_path = pathlib.Path("./config.json")
-# read config file
+# Read config file
 config = json.load(open(config_file_path))
 
-# init openai api key
+# Initialize OpenAI API key
 openai.api_key = config["openai_key"]
 
-# try times
-try_times = 3
+# Define constants for optimization process
+max_iteration = 50
+max_crossover = 0.1
+max_mutation = 0.5
+max_population = 10
 
 
-def inject(intention: Intention, application_harness: Harness):
-    # infer context
-    context_infer = ContextInfer(application_harness)
-    # generate framework
-    for framework_generation_strategy in FRAMEWORK_GENERATION_STRATEGY:
-        framework_generation_strategy = framework_generation_strategy()
-        framework = framework_generation_strategy.generate_framework(
-            application_harness.application_document
-        )
-
-        # generate separator
-        for separator_generator in SEPARATOR_GENERATOR_LIST:
-            separator_generator = separator_generator()
-            separator = separator_generator.generate_separator()
-
-            # generate disruptor
-            for disruptor_generator in DISRUPTOR_GENERATOR_LIST:
-                disruptor_generator = disruptor_generator()
-                disruptor = disruptor_generator.generate_disruptor()
-                prompt_injection = PromptInjection(
-                    intention=intention,
-                )
-                prompt_injection.prompt = f"{framework}{separator}{prompt_injection.intention.question_prompt}{disruptor}"
-                for _ in range(try_times):
-                    response = application_harness.run_harness(prompt_injection)
-                    logger.info(f"Application Response: {response}")
-
-                    # check if the response is successful
-                    if intention.validate(response):
-                        return True, prompt_injection.prompt
-
-                    # infer context
-                    question = context_infer.infer(
-                        prompt_injection.intention.question_prompt, response
-                    )
-                    logger.info(f"Context Infer Question: {question}")
-                    refined_prompt = context_infer.generate_refine_prompt(
-                        framework, separator, disruptor, intention.question_prompt
-                    )
-                    prompt_injection.prompt = refined_prompt
-
-    return False, None
+def inject(intention: Intention, application_harness: Harness) -> Chromosome:
+    # Create and run an IterativePromptOptimizer instance to optimize prompts
+    iterative_prompt_optimizer = IterativePromptOptimizer(
+        intention,
+        application_harness,
+        max_iteration,
+        max_crossover,
+        max_mutation,
+        max_population,
+    )
+    iterative_prompt_optimizer.optimize()
+    return iterative_prompt_optimizer.best_chromosome
 
 
 def main():
-    # init prompt injection intention
-    write_code_intention = WriteCode()
-
-    # init prompt injection harness
+    # Initialize prompt injection intention and harness
+    content_manipulation = ContentManipulation()
     application_harness = TranslatorHarness()
 
-    # begin injection
-    is_success, injected_prompt = inject(write_code_intention, application_harness)
+    # Begin the prompt injection process
+    chromosome = inject(content_manipulation, application_harness)
 
-    if is_success:
-        logger.info(f"Success! Injected prompt: {injected_prompt}")
+    logger.info("Finish injection")
+    if chromosome is None:
+        logger.error("Failed to inject prompt, please check the log for more details")
+
+    # Log the results of the injection
+    if chromosome.is_successful:
+        logger.info(
+            f"Success! Injected prompt: {chromosome.framework}{chromosome.separator}{chromosome.disruptor}"
+        )
     else:
-        logger.info(f"Failed! Injected prompt: {injected_prompt}")
+        logger.info(
+            f"Failed! Injected prompt: {chromosome.framework}{chromosome.separator}{chromosome.disruptor}"
+        )
+    logger.info(f"Fitness Score: {chromosome.fitness_score}")
+    logger.info(f"Response: {chromosome.llm_response}")
 
 
 if __name__ == "__main__":

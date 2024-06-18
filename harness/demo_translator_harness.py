@@ -21,6 +21,6 @@ class TranslatorHarness(Harness):
             f"This is a translator of translating English to French: {prompt}"
         )
         logger.info(f"Application Prompt: {application_prompt}")
-        response = completion_with_chatgpt(prompt)
+        response = completion_with_chatgpt(application_prompt)
         logger.info(f"Response: {response}")
         return response
